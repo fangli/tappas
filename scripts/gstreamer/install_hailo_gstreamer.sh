@@ -18,6 +18,11 @@ INSTALLATION_DIR=/opt/hailo/tappas
 # Occupy all the cores could sometimes freeze the PC
 num_cores_to_use=$(($(nproc)/2))
 
+if [[ -z "$TAPPAS_WORKSPACE" ]]; then
+	  export TAPPAS_WORKSPACE=$(dirname "$(dirname "$(realpath "$0")")")
+	    echo "No TAPPAS_WORKSPACE in environment found, using the default one $TAPPAS_WORKSPACE"
+fi
+
 function print_usage() {
     echo "Install Hailo GStreamer:"
     echo ""
@@ -98,10 +103,11 @@ function main() {
 
     echo "Compiling Hailo Gstreamer target $TARGET, with $num_cores_to_use cpu cores, build type $BUILD_MODE $reconfigure_flag"
 
+
     CC=gcc-$GCC_VERSION CXX=g++-$GCC_VERSION meson build.$BUILD_MODE $reconfigure_flag --prefix "${INSTALLATION_DIR}" --buildtype $BUILD_MODE \
                             -Dtarget=$TARGET \
                             -Dtarget_platform=$TARGET_PLATFORM \
-                            -Dlibargs="-I/usr/include/hailo/,-I/usr/include/gstreamer-1.0/gst/hailo/" \
+			    -Dlibargs="-I/usr/include/hailo/,-I/usr/include/gstreamer-1.0/gst/hailo/,-I/usr/include/hailo/,-I/usr/include/gstreamer-1.0/gst/hailo/,-I$TAPPAS_WORKSPACE/hailort/sources/hailort/libhailort/bindings/gstreamer/gst-hailo/metadata" \
                              -Dinclude_python=true -Dpython_version=$PYTHON_VERSION
 
     if [[ -f "build.$BUILD_MODE/.ninja_log" ]]; then

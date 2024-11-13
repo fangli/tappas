@@ -90,10 +90,10 @@ function python_venv_create_and_install() {
     source ${VENV_PATH}/$VENV_NAME/bin/activate
   fi
   # Install pip packages & Call the downloader script
-  pip3 install --upgrade pip 'setuptools<=66.0.0'
-  pip3 install -r $TAPPAS_WORKSPACE/core/requirements/requirements.txt
-  pip3 install -r $TAPPAS_WORKSPACE/core/requirements/gstreamer_requirements.txt
-  pip3 install -r $TAPPAS_WORKSPACE/downloader/requirements.txt
+  pip3 install --upgrade pip 'setuptools<=66.0.0' --break-system-packages
+  pip3 install -r $TAPPAS_WORKSPACE/core/requirements/requirements.txt --break-system-packages
+  pip3 install -r $TAPPAS_WORKSPACE/core/requirements/gstreamer_requirements.txt --break-system-packages
+  pip3 install -r $TAPPAS_WORKSPACE/downloader/requirements.txt --break-system-packages
   # if rpi5 (core_only) is set dont download apps data (TAPPAS Core mode)
   if [ "$core_only" = false ]; then
     if [[ ${apps_to_set} ]]; then
@@ -112,8 +112,8 @@ function install_hailo() {
   if [ "$target_platform" != "x86" ]; then
     echo "Skipping run_app tool on non x86 target platform..."
   else
-    pip3 install -e ${TAPPAS_WORKSPACE}/tools/run_app
-    pip3 install -e ${TAPPAS_WORKSPACE}/tools/trace_analyzer/dot_visualizer
+    pip3 install -e ${TAPPAS_WORKSPACE}/tools/run_app --break-system-packages
+    pip3 install -e ${TAPPAS_WORKSPACE}/tools/trace_analyzer/dot_visualizer --break-system-packages
     mkdir -p ${TAPPAS_WORKSPACE}/scripts/bash_completion.d
     activate-global-python-argcomplete --dest=${TAPPAS_WORKSPACE}/scripts/bash_completion.d
     echo ". $TAPPAS_WORKSPACE/scripts/bash_completion.d/python-argcomplete" >> ${TAPPAS_BASH_ENV}
